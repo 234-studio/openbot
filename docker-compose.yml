@@ -12,6 +12,8 @@ services:
       # Domyślny profil Docker + user namespaces dla sandboxa Electron.
       - seccomp=./seccomp.json
       - no-new-privileges:true
+      # docker-default AppArmor na tym hoście blokuje user namespaces (Electron).
+      - apparmor=unconfined
     # Chromium wymaga shared memory; domyślne 64 MB to za mało.
     shm_size: 1g
     # OpenBot zatrzymuje agentów i zamyka bazę przed wyjściem.
