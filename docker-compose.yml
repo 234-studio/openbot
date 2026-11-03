@@ -1,0 +1,24 @@
+# OpenBot self-hosted (Easypanel Compose).
+# Bazuje na docker/compose.yaml z taga nightly-labs/openbot v0.59.0.
+# Logowanie: w konsoli kontenera — `openbot login --name ...`
+services:
+  openbot:
+    # Przypięty tag — upgrade = zmiana taga + backup wolumenu /data.
+    # OpenBot nigdy nie wraca do starszej wersji.
+    image: ghcr.io/nightly-labs/openbot:0.59.0
+    restart: unless-stopped
+    mem_limit: 12g
+    security_opt:
+      # Domyślny profil Docker + user namespaces dla sandboxa Electron.
+      - seccomp=./seccomp.json
+      - no-new-privileges:true
+    # Chromium wymaga shared memory; domyślne 64 MB to za mało.
+    shm_size: 1g
+    # OpenBot zatrzymuje agentów i zamyka bazę przed wyjściem.
+    stop_grace_period: 60s
+    volumes:
+      - openbot-data:/data
+    # Tylko ruch wychodzący — bez publikowanych portów, bez host network.
+
+volumes:
+  openbot-data:
